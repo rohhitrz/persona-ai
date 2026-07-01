@@ -8,26 +8,8 @@ import Avatar from "./Avatar";
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
 
-// Personas with a real system prompt call the live /api/chat endpoint.
-// Everyone else still uses the Phase 2 dummy reply until their prompt lands.
-const LIVE_PERSONAS = new Set<PersonaConfig["id"]>(["hitesh"]);
-
 const ERROR_MESSAGE =
   "Something went wrong reaching the model. Please try again in a bit.";
-
-// Fallback for personas that aren't wired to the model yet (e.g. Piyush until
-// Phase 4). The markdown doubles as a quick formatting check.
-function dummyReply(persona: PersonaConfig): string {
-  return [
-    `This is a placeholder response from **${persona.displayName}**. Real AI responses are coming soon!`,
-    "",
-    "In the meantime, here's a quick check that formatting works — some `inline code`, and a block:",
-    "",
-    "```js",
-    'console.log("chai aur code ☕");',
-    "```",
-  ].join("\n");
-}
 
 export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
   const [messages, setMessages] = useState<UiMessage[]>([]);
@@ -62,11 +44,6 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
     }
   }
 
-  async function dummyReplyWithDelay(): Promise<UiMessage> {
-    await new Promise((resolve) => setTimeout(resolve, 600 + Math.random() * 300));
-    return { role: "assistant", content: dummyReply(persona) };
-  }
-
   async function sendMessage() {
     const text = input.trim();
     if (!text || isTyping) return;
@@ -85,9 +62,7 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
       (m): m is ChatMessage => m.role !== "error",
     );
 
-    const reply = LIVE_PERSONAS.has(persona.id)
-      ? await fetchReply(history)
-      : await dummyReplyWithDelay();
+    const reply = await fetchReply(history);
 
     setMessages((prev) => [...prev, reply]);
     setIsTyping(false);
