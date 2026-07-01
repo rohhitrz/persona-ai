@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { getStoredUserName } from "@/lib/userName";
 import type { ChatMessage, PersonaConfig, UiMessage } from "@/types";
 import Avatar from "./Avatar";
 import MessageBubble from "./MessageBubble";
@@ -27,10 +28,12 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
 
   async function fetchReply(history: ChatMessage[]): Promise<UiMessage> {
     try {
+      // Personalise the reply with the stored name when we have one.
+      const userName = getStoredUserName() ?? undefined;
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personaId: persona.id, messages: history }),
+        body: JSON.stringify({ personaId: persona.id, messages: history, userName }),
       });
 
       if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
@@ -45,30 +48,37 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
     }
   }
 
+  // Shared tail of send/retry: show the typing indicator, hit the API with the
+  // user/assistant history (never the error notices), then append the reply.
+  async function runReply(thread: UiMessage[]) {
+    setMessages(thread);
+    setIsTyping(true);
+
+    const history = thread.filter((m): m is ChatMessage => m.role !== "error");
+    const reply = await fetchReply(history);
+
+    setMessages((prev) => [...prev, reply]);
+    setIsTyping(false);
+  }
+
   // Optional `rawText` lets a suggested-question chip reuse this exact path;
   // when omitted it falls back to whatever is in the input box.
   async function sendMessage(rawText?: string) {
     const text = (rawText ?? input).trim();
     if (!text || isTyping) return;
 
-    const nextMessages: UiMessage[] = [
-      ...messages,
-      { role: "user", content: text },
-    ];
-    setMessages(nextMessages);
     setInput("");
-    setIsTyping(true);
+    await runReply([...messages, { role: "user", content: text }]);
+  }
 
-    // Only real chat messages (user/assistant) go to the model — drop any
-    // in-thread error notices.
-    const history = nextMessages.filter(
-      (m): m is ChatMessage => m.role !== "error",
-    );
-
-    const reply = await fetchReply(history);
-
-    setMessages((prev) => [...prev, reply]);
-    setIsTyping(false);
+  // Retry after a failed reply: drop the trailing error notice and re-send the
+  // existing conversation.
+  async function retryLast() {
+    if (isTyping) return;
+    const base =
+      messages.at(-1)?.role === "error" ? messages.slice(0, -1) : messages;
+    if (base.length === 0) return;
+    await runReply(base);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -81,7 +91,9 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
   const isEmpty = messages.length === 0 && !isTyping;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    // 100dvh (not flex-1) so the input stays above the mobile keyboard when it
+    // opens and the viewport shrinks.
+    <div className="flex h-[100dvh] flex-col">
       {/* Header */}
       <header className="shrink-0 border-b border-stone-200 bg-white/80 backdrop-blur">
         <div className="mx-auto flex w-full max-w-3xl items-center gap-3 px-4 py-3">
@@ -146,6 +158,11 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
                 key={index}
                 message={message}
                 persona={persona}
+                onRetry={
+                  message.role === "error" && index === messages.length - 1
+                    ? retryLast
+                    : undefined
+                }
               />
             ))
           )}

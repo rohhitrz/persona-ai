@@ -6,15 +6,27 @@ import MarkdownMessage from "./MarkdownMessage";
 export default function MessageBubble({
   message,
   persona,
+  onRetry,
 }: {
   message: UiMessage;
   persona: PersonaConfig;
+  /** When provided, a failed message shows a retry button. */
+  onRetry?: () => void;
 }) {
   if (message.role === "error") {
     return (
       <div className="flex justify-center">
-        <div className="max-w-[90%] rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-center text-xs text-red-600">
-          {message.content}
+        <div className="flex max-w-[90%] flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-center text-xs text-red-600">
+          <span>{message.content}</span>
+          {onRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="font-semibold text-red-700 underline underline-offset-2 hover:text-red-900"
+            >
+              Retry
+            </button>
+          )}
         </div>
       </div>
     );
