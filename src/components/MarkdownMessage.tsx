@@ -6,6 +6,21 @@ import remarkGfm from "remark-gfm";
 // instead of showing raw markdown syntax.
 const components: Components = {
   p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+  h1: ({ children }) => (
+    <h1 className="mb-2 mt-1 text-base font-semibold text-stone-900 first:mt-0">
+      {children}
+    </h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="mb-2 mt-1 text-base font-semibold text-stone-900 first:mt-0">
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="mb-1.5 mt-1 text-sm font-semibold text-stone-900 first:mt-0">
+      {children}
+    </h3>
+  ),
   strong: ({ children }) => (
     <strong className="font-semibold text-stone-900">{children}</strong>
   ),
