@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ChatMessage, PersonaConfig, UiMessage } from "@/types";
 import Avatar from "./Avatar";
 import MessageBubble from "./MessageBubble";
+import SuggestedQuestions from "./SuggestedQuestions";
 import TypingIndicator from "./TypingIndicator";
 
 const ERROR_MESSAGE =
@@ -44,8 +45,10 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
     }
   }
 
-  async function sendMessage() {
-    const text = input.trim();
+  // Optional `rawText` lets a suggested-question chip reuse this exact path;
+  // when omitted it falls back to whatever is in the input box.
+  async function sendMessage(rawText?: string) {
+    const text = (rawText ?? input).trim();
     if (!text || isTyping) return;
 
     const nextMessages: UiMessage[] = [
@@ -110,7 +113,7 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto flex min-h-full w-full max-w-3xl flex-col gap-4 px-4 py-6">
           {isEmpty ? (
-            <div className="m-auto flex flex-col items-center gap-4 py-10 text-center">
+            <div className="m-auto flex w-full max-w-lg flex-col items-center gap-6 py-10 text-center">
               <Avatar
                 src={persona.avatarSrc}
                 alt={persona.displayName}
@@ -125,6 +128,16 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
                 <p className="mx-auto mt-1 max-w-xs text-sm text-stone-500">
                   {persona.tagline}
                 </p>
+              </div>
+              <div className="flex flex-col items-center gap-2.5">
+                <p className="text-xs font-medium uppercase tracking-wider text-stone-400">
+                  Try asking
+                </p>
+                <SuggestedQuestions
+                  persona={persona}
+                  onSelect={(question) => sendMessage(question)}
+                  disabled={isTyping}
+                />
               </div>
             </div>
           ) : (
