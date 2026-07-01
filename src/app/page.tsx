@@ -27,7 +27,7 @@ export default function Home() {
         </div>
 
         <p className="mt-10 text-center text-xs text-stone-400">
-          An unofficial fan project — personas are AI recreations, built for
+          personas are AI recreations, built for
           learning.
         </p>
       </div>

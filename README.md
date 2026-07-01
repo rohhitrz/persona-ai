@@ -1,7 +1,7 @@
 # Persona AI
 
 A small Next.js app for chatting with AI recreations of two Indian tech
-educators — **Hitesh Choudhary** and **Piyush Garg**. Each persona is
+educators — **Hitesh Sir** and **Piyush Sir**. Each persona is
 prompt-engineered to sound like the real person: their vocabulary, teaching
 style, and humour — not a generic chatbot.
 
