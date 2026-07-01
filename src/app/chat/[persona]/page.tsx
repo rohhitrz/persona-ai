@@ -54,5 +54,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
     );
   }
 
-  return <ChatRoom persona={persona} />;
+  // key={persona.id} forces a fresh ChatRoom (and fresh message state) when
+  // switching personas, so one persona's conversation never leaks into another.
+  return <ChatRoom key={persona.id} persona={persona} />;
 }
