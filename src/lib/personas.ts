@@ -1,8 +1,7 @@
 import type { PersonaConfig, PersonaId } from "@/types";
 
-// Display metadata for each persona used by the chat view. Keep this to
-// presentational fields only — the persona's actual voice/system prompt is
-// added in Phase 3/4.
+// Display metadata for each persona used by the chat view. Presentational
+// fields only — the persona's voice lives in its system prompt (src/lib/prompts).
 export const PERSONAS: Record<PersonaId, PersonaConfig> = {
   hitesh: {
     id: "hitesh",

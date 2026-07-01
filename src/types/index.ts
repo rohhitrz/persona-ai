@@ -21,9 +21,8 @@ export interface Persona {
 }
 
 /**
- * Display metadata for a persona inside the chat view. Deliberately just the
- * presentational bits for now — actual persona *behaviour* (system prompts,
- * etc.) arrives in Phase 3/4.
+ * Display metadata for a persona inside the chat view — the presentational
+ * bits. The persona's actual voice lives in its system prompt (src/lib/prompts).
  */
 export interface PersonaConfig {
   id: PersonaId;
