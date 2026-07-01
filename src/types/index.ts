@@ -45,3 +45,12 @@ export interface ChatMessage {
   role: ChatRole;
   content: string;
 }
+
+/**
+ * A message as rendered in the chat thread. Extends ChatMessage with an
+ * "error" role for in-thread error notices, which are never sent to the API.
+ */
+export interface UiMessage {
+  role: ChatRole | "error";
+  content: string;
+}

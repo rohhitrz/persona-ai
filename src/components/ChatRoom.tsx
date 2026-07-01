@@ -3,17 +3,23 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import type { ChatMessage, PersonaConfig } from "@/types";
+import type { ChatMessage, PersonaConfig, UiMessage } from "@/types";
 import Avatar from "./Avatar";
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
 
-// Phase 2 only: fake the bot reply so we can get the interaction loop and
-// loading states right before the real model is wired up in Phase 3. The
-// markdown bits double as a quick check that formatting renders cleanly.
+// Personas with a real system prompt call the live /api/chat endpoint.
+// Everyone else still uses the Phase 2 dummy reply until their prompt lands.
+const LIVE_PERSONAS = new Set<PersonaConfig["id"]>(["hitesh"]);
+
+const ERROR_MESSAGE =
+  "Something went wrong reaching the model. Please try again in a bit.";
+
+// Fallback for personas that aren't wired to the model yet (e.g. Piyush until
+// Phase 4). The markdown doubles as a quick formatting check.
 function dummyReply(persona: PersonaConfig): string {
   return [
-    `This is a placeholder response from **${persona.displayName}**. Real AI responses are coming in Phase 3!`,
+    `This is a placeholder response from **${persona.displayName}**. Real AI responses are coming soon!`,
     "",
     "In the meantime, here's a quick check that formatting works — some `inline code`, and a block:",
     "",
@@ -24,12 +30,11 @@ function dummyReply(persona: PersonaConfig): string {
 }
 
 export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<UiMessage[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  const replyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Keep the latest message (or typing indicator) in view.
   useEffect(() => {
@@ -37,29 +42,55 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // Don't fire a stale reply if the user navigates away mid-"typing".
-  useEffect(() => {
-    return () => {
-      if (replyTimer.current) clearTimeout(replyTimer.current);
-    };
-  }, []);
+  async function fetchReply(history: ChatMessage[]): Promise<UiMessage> {
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ personaId: persona.id, messages: history }),
+      });
 
-  function sendMessage() {
+      if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
+
+      const data = (await res.json()) as { reply?: string };
+      if (!data.reply) throw new Error("Empty reply from server");
+
+      return { role: "assistant", content: data.reply };
+    } catch (error) {
+      console.error("[chat] failed to fetch reply:", error);
+      return { role: "error", content: ERROR_MESSAGE };
+    }
+  }
+
+  async function dummyReplyWithDelay(): Promise<UiMessage> {
+    await new Promise((resolve) => setTimeout(resolve, 600 + Math.random() * 300));
+    return { role: "assistant", content: dummyReply(persona) };
+  }
+
+  async function sendMessage() {
     const text = input.trim();
     if (!text || isTyping) return;
 
-    setMessages((prev) => [...prev, { role: "user", content: text }]);
+    const nextMessages: UiMessage[] = [
+      ...messages,
+      { role: "user", content: text },
+    ];
+    setMessages(nextMessages);
     setInput("");
     setIsTyping(true);
 
-    const delay = 600 + Math.random() * 300; // 600–900ms
-    replyTimer.current = setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: dummyReply(persona) },
-      ]);
-      setIsTyping(false);
-    }, delay);
+    // Only real chat messages (user/assistant) go to the model — drop any
+    // in-thread error notices.
+    const history = nextMessages.filter(
+      (m): m is ChatMessage => m.role !== "error",
+    );
+
+    const reply = LIVE_PERSONAS.has(persona.id)
+      ? await fetchReply(history)
+      : await dummyReplyWithDelay();
+
+    setMessages((prev) => [...prev, reply]);
+    setIsTyping(false);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {

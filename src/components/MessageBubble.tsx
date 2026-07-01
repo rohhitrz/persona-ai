@@ -1,4 +1,4 @@
-import type { ChatMessage, PersonaConfig } from "@/types";
+import type { PersonaConfig, UiMessage } from "@/types";
 import Avatar from "./Avatar";
 import MarkdownMessage from "./MarkdownMessage";
 
@@ -7,9 +7,19 @@ export default function MessageBubble({
   message,
   persona,
 }: {
-  message: ChatMessage;
+  message: UiMessage;
   persona: PersonaConfig;
 }) {
+  if (message.role === "error") {
+    return (
+      <div className="flex justify-center">
+        <div className="max-w-[90%] rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-center text-xs text-red-600">
+          {message.content}
+        </div>
+      </div>
+    );
+  }
+
   if (message.role === "user") {
     return (
       <div className="flex justify-end">
