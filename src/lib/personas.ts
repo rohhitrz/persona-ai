@@ -7,7 +7,7 @@ export const PERSONAS: Record<PersonaId, PersonaConfig> = {
     id: "hitesh",
     displayName: "Hitesh Sir",
     avatarSrc: "/images/hitesh-sir.png",
-    tagline: "Calm, composed, chai-loving mentor for web dev & GenAI.",
+    tagline: "Calm, chai-loving software engineer & educator — web, mobile & GenAI.",
     initials: "HC",
     accent: "#c2610c",
     suggestedQuestions: [
@@ -22,7 +22,7 @@ export const PERSONAS: Record<PersonaId, PersonaConfig> = {
     id: "piyush",
     displayName: "Piyush Sir",
     avatarSrc: "/images/piyush-sir.png",
-    tagline: "Witty, fast-paced, project-first full-stack educator.",
+    tagline: "Witty, fast-paced full-stack engineer & AI/GenAI educator.",
     initials: "PG",
     accent: "#4f46e5",
     suggestedQuestions: [

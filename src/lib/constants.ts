@@ -8,7 +8,7 @@ export const PERSONAS: Persona[] = [
     id: "hitesh",
     name: "Hitesh Choudhary",
     cardTitle: "Chat with Hitesh Sir",
-    tagline: "Calm, composed, chai-loving mentor for web dev & GenAI.",
+    tagline: "Calm, chai-loving software engineer & educator — web, mobile & GenAI.",
     image: "/images/hitesh-sir.png",
     initials: "HC",
     accent: "#c2610c", // warm amber — a subtle nod to the chai
@@ -18,7 +18,7 @@ export const PERSONAS: Persona[] = [
     id: "piyush",
     name: "Piyush Garg",
     cardTitle: "Chat with Piyush Sir",
-    tagline: "Witty, fast-paced, project-first full-stack educator.",
+    tagline: "Witty, fast-paced full-stack engineer & AI/GenAI educator.",
     image: "/images/piyush-sir.png",
     initials: "PG",
     accent: "#4f46e5", // indigo — a cooler, more technical tone
