@@ -15,7 +15,7 @@ export const PERSONAS: Record<PersonaId, PersonaConfig> = {
       "Async/await ka use kyu karte hain?",
       "Aap direct solution kyu nahi dete?",
       "Sirf FAANG try karu ya aur bhi options hain?",
-      "GenAI seekhne ke liye kaha se shuru karu?",
+      "Sir, DSA html me karna hai ya js me?",
     ],
   },
   piyush: {
