@@ -1,9 +1,11 @@
+import NameGate from "@/components/NameGate";
 import PersonaCard from "@/components/PersonaCard";
 import { PERSONAS } from "@/lib/constants";
 
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-6 py-16">
+      <NameGate />
       <div className="w-full max-w-3xl">
         <div className="text-center">
           <span className="inline-block rounded-full border border-stone-200 bg-white/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-stone-500">
