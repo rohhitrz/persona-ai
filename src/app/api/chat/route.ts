@@ -4,12 +4,14 @@ import { NextResponse } from "next/server";
 import { CHAT_MODEL, getOpenAIClient } from "@/lib/openai";
 import { getPersona } from "@/lib/personas";
 import { HITESH_SYSTEM_PROMPT } from "@/lib/prompts/hitesh";
+import { PIYUSH_SYSTEM_PROMPT } from "@/lib/prompts/piyush";
 import type { PersonaId } from "@/types";
 
-// Persona system prompts available to the API. Piyush is added in Phase 4 —
-// until then only Hitesh has a real prompt here.
-const SYSTEM_PROMPTS: Partial<Record<PersonaId, string>> = {
+// System prompt for each persona. Both personas are live and go through the
+// exact same path from here.
+const SYSTEM_PROMPTS: Record<PersonaId, string> = {
   hitesh: HITESH_SYSTEM_PROMPT,
+  piyush: PIYUSH_SYSTEM_PROMPT,
 };
 
 type IncomingMessage = { role: "user" | "assistant"; content: string };
@@ -37,19 +39,13 @@ export async function POST(request: Request) {
     userName?: string;
   };
 
-  // Validate the persona and make sure it has a real prompt wired up.
+  // Validate the persona.
   const persona = personaId ? getPersona(personaId) : undefined;
   if (!persona) {
     return NextResponse.json({ error: "Unknown persona." }, { status: 400 });
   }
 
   const systemPrompt = SYSTEM_PROMPTS[persona.id];
-  if (!systemPrompt) {
-    return NextResponse.json(
-      { error: "This persona isn't available yet." },
-      { status: 400 },
-    );
-  }
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return NextResponse.json(
