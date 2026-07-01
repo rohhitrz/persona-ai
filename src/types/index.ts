@@ -37,6 +37,8 @@ export interface PersonaConfig {
   initials: string;
   /** Accent colour (hex) used for subtle per-persona theming. */
   accent: string;
+  /** Icebreaker questions shown as clickable chips in the empty chat state. */
+  suggestedQuestions: string[];
 }
 
 export type ChatRole = "user" | "assistant";

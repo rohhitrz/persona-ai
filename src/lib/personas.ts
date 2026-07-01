@@ -11,6 +11,13 @@ export const PERSONAS: Record<PersonaId, PersonaConfig> = {
     tagline: "Calm, composed, chai-loving mentor for web dev & GenAI.",
     initials: "HC",
     accent: "#c2610c",
+    suggestedQuestions: [
+      "Aaj kaunsi chai pi rahe ho sir?",
+      "Async/await ka use kyu karte hain?",
+      "Aap direct solution kyu nahi dete?",
+      "Sirf FAANG try karu ya aur bhi options hain?",
+      "GenAI seekhne ke liye kaha se shuru karu?",
+    ],
   },
   piyush: {
     id: "piyush",
@@ -19,6 +26,13 @@ export const PERSONAS: Record<PersonaId, PersonaConfig> = {
     tagline: "Witty, fast-paced, project-first full-stack educator.",
     initials: "PG",
     accent: "#4f46e5",
+    suggestedQuestions: [
+      "Aaj kya kar rahe ho?",
+      "Aap kaha kaam karte ho?",
+      "RAG kaise implement karu apne project mein?",
+      "Aap theory se pehle project kyu karwate ho?",
+      "Kuch interesting bata do aaj ka",
+    ],
   },
 };
 
