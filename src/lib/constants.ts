@@ -11,7 +11,7 @@ export const PERSONAS: Persona[] = [
     tagline: "Calm, chai-loving software engineer & educator — web, mobile & GenAI.",
     image: "/images/hitesh-sir.png",
     initials: "HC",
-    accent: "#c2610c", // warm amber — a subtle nod to the chai
+    accent: "#F09A4C", // trying for chai — a subtle nod to the chai
     href: "/chat/hitesh",
   },
   {
@@ -21,7 +21,7 @@ export const PERSONAS: Persona[] = [
     tagline: "Witty, fast-paced full-stack engineer & AI/GenAI educator.",
     image: "/images/piyush-sir.png",
     initials: "PG",
-    accent: "#4f46e5", // indigo — a cooler, more technical tone
+    accent: "#FF69B4", // pink — a cooler, more technical tone
     href: "/chat/piyush",
   },
 ];

@@ -43,3 +43,6 @@ yarn-error.log*
 next-env.d.ts
 AGENTS.md
 CLAUDE.md
+
+# personal, private notes — never commit
+PROJECT_NOTES_PERSONAL.md
