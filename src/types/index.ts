@@ -47,11 +47,23 @@ export interface ChatMessage {
   content: string;
 }
 
+/** A video or playlist result from a persona's own YouTube channel. */
+export interface YouTubeResult {
+  id: string;
+  kind: "video" | "playlist";
+  title: string;
+  url: string;
+  thumbnail: string;
+  channelTitle: string;
+}
+
 /**
  * A message as rendered in the chat thread. Extends ChatMessage with an
  * "error" role for in-thread error notices, which are never sent to the API.
+ * Assistant messages may carry YouTube results to render as clickable cards.
  */
 export interface UiMessage {
   role: ChatRole | "error";
   content: string;
+  videos?: YouTubeResult[];
 }

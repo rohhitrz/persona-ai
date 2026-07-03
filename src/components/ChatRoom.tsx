@@ -38,10 +38,13 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
 
       if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
 
-      const data = (await res.json()) as { reply?: string };
+      const data = (await res.json()) as {
+        reply?: string;
+        videos?: UiMessage["videos"];
+      };
       if (!data.reply) throw new Error("Empty reply from server");
 
-      return { role: "assistant", content: data.reply };
+      return { role: "assistant", content: data.reply, videos: data.videos };
     } catch (error) {
       console.error("[chat] failed to fetch reply:", error);
       return { role: "error", content: ERROR_MESSAGE };

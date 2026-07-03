@@ -1,6 +1,7 @@
 import type { PersonaConfig, UiMessage } from "@/types";
 import Avatar from "./Avatar";
 import MarkdownMessage from "./MarkdownMessage";
+import VideoResults from "./VideoResults";
 
 /** A single chat message — user bubbles align right, bot bubbles left. */
 export default function MessageBubble({
@@ -56,8 +57,13 @@ export default function MessageBubble({
           size={32}
         />
       </div>
-      <div className="max-w-[85%] rounded-2xl rounded-tl-sm border border-stone-200 bg-white px-4 py-2.5 shadow-sm">
-        <MarkdownMessage content={message.content} />
+      <div className="max-w-[85%]">
+        <div className="rounded-2xl rounded-tl-sm border border-stone-200 bg-white px-4 py-2.5 shadow-sm">
+          <MarkdownMessage content={message.content} />
+        </div>
+        {message.videos && message.videos.length > 0 && (
+          <VideoResults videos={message.videos} />
+        )}
       </div>
     </div>
   );
