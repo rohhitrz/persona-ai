@@ -7,6 +7,7 @@ import { getStoredUserName } from "@/lib/userName";
 import type { ChatMessage, PersonaConfig, UiMessage } from "@/types";
 import Avatar from "./Avatar";
 import MessageBubble from "./MessageBubble";
+import PersonaSwitcher from "./PersonaSwitcher";
 import SuggestedQuestions from "./SuggestedQuestions";
 import TypingIndicator from "./TypingIndicator";
 
@@ -115,12 +116,13 @@ export default function ChatRoom({ persona }: { persona: PersonaConfig }) {
             accent={persona.accent}
             size={40}
           />
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <h1 className="truncate text-sm font-semibold text-stone-900">
               {persona.displayName}
             </h1>
             <p className="truncate text-xs text-stone-500">{persona.tagline}</p>
           </div>
+          <PersonaSwitcher activeId={persona.id} />
         </div>
       </header>
 

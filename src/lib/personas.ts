@@ -29,7 +29,6 @@ export const PERSONAS: Record<PersonaId, PersonaConfig> = {
       "Aaj kya kar rahe ho?",
       "Aap kaha kaam karte ho?",
       "RAG kaise implement karu apne project mein?",
-      "Aap theory se pehle project kyu karwate ho?",
       "Kuch interesting bata do aaj ka",
     ],
   },
